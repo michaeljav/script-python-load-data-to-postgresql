@@ -161,8 +161,8 @@ def load_csv_to_postgres(engine, csv_path, schema, sep, encoding, chunksize):
 
     # Captura errores de SQLAlchemy o de valor
     except (ValueError, SQLAlchemyError) as e:
-        # Imprime mensaje de error
-        print(f"ERROR: La tabla '{schema}.{table_name}' ya existe o ocurrio un error.")
+        # Imprime el error real para diagnostico
+        print(f"ERROR real: {e}")
         # Indica que se detiene el proceso
         print("Proceso detenido.")
         # Finaliza el programa con error
