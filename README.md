@@ -85,6 +85,17 @@ Cuando el ambiente esté activo verás:
 
 ## 4) Instalar dependencias
 
+### Opcion recomendada (requirements.txt)
+Esto es importante porque asegura que todos instalen exactamente las mismas dependencias
+y evita tener que escribir los comandos de instalacion a mano.
+Tambien ayuda a no olvidar paquetes y reduce errores por versiones faltantes.
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### Opcion manual (si no usas requirements.txt)
 ```bash
 pip install --upgrade pip
 pip install pandas sqlalchemy psycopg2-binary
