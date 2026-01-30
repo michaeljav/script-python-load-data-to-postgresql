@@ -14,14 +14,14 @@ CONFIG = {
     # Formato: postgresql+psycopg2://USUARIO:CLAVE@HOST:PUERTO/NOMBRE_BD
     # Ejemplo: postgresql+psycopg2://postgres:mi_clave@localhost:5432/mi_base
     # Si queda en None, el script la exigira por CLI con --db
-    "DB_URL": "postgresql+psycopg2://USUARIO:CLAVE@HOST:PUERTO/NOMBRE_BD",
+    "DB_URL": "postgresql+psycopg2://postgres:mi_clave@localhost:5432/mi_base",
 
     # ============================
     # OPCIONAL
     # ============================
     # Directorio donde estan los CSV
     # Si queda en None, se tomara el directorio pasado por CLI (o ".")
-    "CSV_DIR": None,   # Ej: "./csvs"
+    "CSV_DIR": "./csvs",   # Ej: "./csvs"
 
     # Lista de CSV especificos a procesar
     # None => procesa todos los CSV del directorio
