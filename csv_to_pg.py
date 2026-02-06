@@ -66,6 +66,8 @@ def resolve_value(cfg_value, cli_value, default=None):
 # Define funcion que devuelve la lista de CSV a procesar
 
 def get_csv_files(csv_dir: str, csv_names: list[str] | None) -> list[str]:
+    # Extensiones soportadas
+    allowed_exts = (".csv", ".xlsx", ".xls")
     # Valida que csv_dir sea un directorio existente
     # Ejemplo: csv_dir="C:/no-existe" -> lanza NotADirectoryError
     if not os.path.isdir(csv_dir):
@@ -99,13 +101,13 @@ def get_csv_files(csv_dir: str, csv_names: list[str] | None) -> list[str]:
         # Recorre los archivos del directorio
         for f in os.listdir(csv_dir)
         # Filtra solo los que terminan en .csv
-        if f.lower().endswith(".csv")
+        if f.lower().endswith(allowed_exts)
     ]
 
     # Si no encontro ningun CSV, falla
     if not files:
         # Lanza error si no hay CSV
-        raise FileNotFoundError(f"No hay CSV en: {csv_dir}")
+        raise FileNotFoundError(f"No hay CSV/XLSX en: {csv_dir}")
 
     # Devuelve lista ordenada para procesamiento estable
     return sorted(files)
@@ -123,9 +125,31 @@ def load_csv_to_postgres(engine, csv_path, schema, sep, encoding, chunksize):
     # Imprime la tabla destino
     print(f"Tabla destino: {schema}.{table_name}")
 
-    # Lee el CSV a un DataFrame
-    # Ejemplo: sep=";", encoding="utf-8"
-    df = pd.read_csv(csv_path, sep=sep, encoding=encoding)
+    # Lee el archivo a un DataFrame segun su extension
+    ext = os.path.splitext(csv_path)[1].lower()
+    try:
+        if ext == ".csv":
+            # Lee todo como texto para preservar ceros a la izquierda
+            df = pd.read_csv(
+                csv_path,
+                sep=sep,
+                encoding=encoding,
+                dtype=str,
+                keep_default_na=False,
+            )
+        elif ext in (".xlsx", ".xls"):
+            # Lee todo como texto para preservar ceros a la izquierda
+            df = pd.read_excel(
+                csv_path,
+                dtype=str,
+                keep_default_na=False,
+            )
+        else:
+            raise ValueError(f"Extension no soportada: {ext}")
+    except ImportError as e:
+        print(f"ERROR: Falta dependencia para leer Excel ({e}).")
+        print("Instala: pip install openpyxl")
+        sys.exit(1)
 
     # Normaliza nombres de columnas del DataFrame
     df.columns = [
